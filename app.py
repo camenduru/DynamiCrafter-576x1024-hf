@@ -19,7 +19,7 @@ from funcs import (
     save_videos
 )
 
-def download_model(self):
+def download_model():
     REPO_ID = 'Doubiiu/DynamiCrafter'
     filename_list = ['model.ckpt']
     if not os.path.exists('./checkpoints/dynamicrafter_256_v1/'):
