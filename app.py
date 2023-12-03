@@ -23,11 +23,11 @@ def download_model():
     REPO_ID = 'Doubiiu/DynamiCrafter'
     filename_list = ['model.ckpt']
     if not os.path.exists('./checkpoints/dynamicrafter_256_v1/'):
-        os.makedirs('./dynamicrafter_256_v1/')
+        os.makedirs('./checkpoints/dynamicrafter_256_v1/')
     for filename in filename_list:
         local_file = os.path.join('./checkpoints/dynamicrafter_256_v1/', filename)
         if not os.path.exists(local_file):
-            hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_256_v1/', local_dir_use_symlinks=False)
+            hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_256_v1/', force_download=True)
     
 
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
