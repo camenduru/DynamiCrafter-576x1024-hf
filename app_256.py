@@ -99,13 +99,12 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
 
 
 i2v_examples = [
-    ['prompts/art.png', 'man fishing in a boat at sunset', 50, 7.5, 1.0, 3, 234],
-    ['prompts/boy.png', 'boy walking on the street', 50, 7.5, 1.0, 3, 125],
-    ['prompts/dance1.jpeg', 'two people dancing', 50, 7.5, 1.0, 3, 116],
-    ['prompts/fire_and_beach.jpg', 'a campfire on the beach and the ocean waves in the background', 50, 7.5, 1.0, 3, 111],
-    ['prompts/girl3.jpeg', 'girl talking and blinking', 50, 7.5, 1.0, 3, 111],
-    ['prompts/guitar0.jpeg', 'bear playing guitar happily, snowing', 50, 7.5, 1.0, 3, 122],
-    ['prompts/surf.png', 'a man is surfing', 50, 7.5, 1.0, 3, 123],
+    ['prompts/256/art.png', 'man fishing in a boat at sunset', 50, 7.5, 1.0, 3, 234],
+    ['prompts/256/boy.png', 'boy walking on the street', 50, 7.5, 1.0, 3, 125],
+    ['prompts/256/dance1.jpeg', 'two people dancing', 50, 7.5, 1.0, 3, 116],
+    ['prompts/256/fire_and_beach.jpg', 'a campfire on the beach and the ocean waves in the background', 50, 7.5, 1.0, 3, 111],
+    ['prompts/256/girl3.jpeg', 'girl talking and blinking', 50, 7.5, 1.0, 3, 111],
+    ['prompts/256/guitar0.jpeg', 'bear playing guitar happily, snowing', 50, 7.5, 1.0, 3, 122],
 ]
 css = """#input_img {max-width: 256px !important} #output_vid {max-width: 256px; max-height: 256px}"""
 
@@ -123,7 +122,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                     <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a> \
                     <a style='font-size:18px;color: #000000' href='https://github.com/Doubiiu/DynamiCrafter'> [Github] </a> </div>")
     
-    with gr.Tab(label='ImageAnimation'):
+    with gr.Tab(label='ImageAnimation_256x256'):
         with gr.Column():
             with gr.Row():
                 with gr.Column():
