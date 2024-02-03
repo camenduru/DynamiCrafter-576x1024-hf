@@ -21,21 +21,20 @@ from funcs import (
 )
 
 def download_model():
-    REPO_ID = 'Doubiiu/DynamiCrafter_1024'
+    REPO_ID = 'Doubiiu/DynamiCrafter'
     filename_list = ['model.ckpt']
-    if not os.path.exists('./checkpoints/dynamicrafter_1024_v1/'):
-        os.makedirs('./checkpoints/dynamicrafter_1024_v1/')
+    if not os.path.exists('./checkpoints/dynamicrafter_256_v1/'):
+        os.makedirs('./checkpoints/dynamicrafter_256_v1/')
     for filename in filename_list:
-        local_file = os.path.join('./checkpoints/dynamicrafter_1024_v1/', filename)
+        local_file = os.path.join('./checkpoints/dynamicrafter_256_v1/', filename)
         if not os.path.exists(local_file):
-            hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_1024_v1/', force_download=True)
+            hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_256_v1/', force_download=True)
     
 
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
-    resolution = (576, 1024)
     download_model()
-    ckpt_path='checkpoints/dynamicrafter_1024_v1/model.ckpt'
-    config_file='configs/inference_1024_v1.0.yaml'
+    ckpt_path='checkpoints/dynamicrafter_256_v1/model.ckpt'
+    config_file='configs/inference_256_v1.0.yaml'
     config = OmegaConf.load(config_file)
     model_config = config.pop("model", OmegaConf.create())
     model_config['params']['unet_config']['params']['use_checkpoint']=False   
@@ -48,8 +47,8 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
 
     seed_everything(seed)
     transform = transforms.Compose([
-        transforms.Resize(min(resolution)),
-        transforms.CenterCrop(resolution),
+        transforms.Resize(256),
+        transforms.CenterCrop(256),
         ])
     torch.cuda.empty_cache()
     print('start:', prompt, time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
@@ -60,7 +59,7 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     batch_size=1
     channels = model.model.diffusion_model.out_channels
     frames = model.temporal_length
-    h, w = resolution[0] // 8, resolution[1] // 8
+    h, w = 256 // 8, 256 // 8
     noise_shape = [batch_size, channels, frames, h, w]
 
     # text cond
@@ -105,9 +104,10 @@ i2v_examples = [
     ['prompts/dance1.jpeg', 'two people dancing', 50, 7.5, 1.0, 3, 116],
     ['prompts/fire_and_beach.jpg', 'a campfire on the beach and the ocean waves in the background', 50, 7.5, 1.0, 3, 111],
     ['prompts/girl3.jpeg', 'girl talking and blinking', 50, 7.5, 1.0, 3, 111],
-    ['prompts/guitar0.jpeg', 'bear playing guitar happily, snowing', 50, 7.5, 1.0, 3, 111],
+    ['prompts/guitar0.jpeg', 'bear playing guitar happily, snowing', 50, 7.5, 1.0, 3, 122],
+    ['prompts/surf.png', 'a man is surfing', 50, 7.5, 1.0, 3, 123],
 ]
-css = """#input_img {max-width: 1024px !important} #output_vid {max-width: 1024px; max-height: 576px}"""
+css = """#input_img {max-width: 256px !important} #output_vid {max-width: 256px; max-height: 256px}"""
 
 with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
     gr.Markdown("<div align='center'> <h1> DynamiCrafter: Animating Open-domain Images with Video Diffusion Priors </span> </h1> \
@@ -123,7 +123,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                     <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a> \
                     <a style='font-size:18px;color: #000000' href='https://github.com/Doubiiu/DynamiCrafter'> [Github] </a> </div>")
     
-    with gr.Tab(label='ImageAnimation_576x1024'):
+    with gr.Tab(label='ImageAnimation'):
         with gr.Column():
             with gr.Row():
                 with gr.Column():
@@ -137,7 +137,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                         i2v_cfg_scale = gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='CFG Scale', value=7.5, elem_id="i2v_cfg_scale")
                     with gr.Row():
                         i2v_steps = gr.Slider(minimum=1, maximum=60, step=1, elem_id="i2v_steps", label="Sampling steps", value=50)
-                        i2v_motion = gr.Slider(minimum=5, maximum=20, step=1, elem_id="i2v_motion", label="FPS", value=10)
+                        i2v_motion = gr.Slider(minimum=1, maximum=4, step=1, elem_id="i2v_motion", label="Motion magnitude", value=3)
                     i2v_end_btn = gr.Button("Generate")
                 # with gr.Tab(label='Result'):
                 with gr.Row():
