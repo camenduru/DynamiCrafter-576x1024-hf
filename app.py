@@ -153,4 +153,4 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                         fn = infer
         )
 
-dynamicrafter_iface.queue(max_size=12).launch(show_api=True)
+dynamicrafter_iface.queue(max_size=12).launch(show_api=True, share=True)
